@@ -1,28 +1,25 @@
 module tutorial_led_blink // define the inputs and outputs
   (
-   i_clock,
-   i_enable,
-   i_switch_1,
-   i_switch_2,
-   o_led_drive
+   input CLK,
+   input EN,
+   input SW1,
+   input SW2,
+   output LED0,
+   output LED1,
+   output LED2,
+   output LED3,
+   output LED4 			//green yeahhhh
    );
- 
-  input i_clock;          // for some reason this tutorial split up top module and IO
-  input i_enable;
-  input i_switch_1;
-  input i_switch_2;
-  output o_led_drive;
-    
+     
   // Constants (parameters) to create the frequencies needed:
-  // Input clock is 25 kHz, chosen arbitrarily.
   // Icestick clock is 12 MHz, so (12 MHz/ 100 Hz * x% duty cycle)
-  // Formula is: (25 kHz / 100 Hz * 50% duty cycle)
-  // So for 100 Hz: 25,000 / 100 * 0.5 = 125
+  // Formula is: (12 MHz / 100 Hz * 50% duty cycle)
+  // So for 100 Hz: 12000000 / 100 * 0.5 = 6000
   // Parameters can have data type, range and sign identifiers, and are defined before compiling
-  parameter c_CNT_100HZ = 125; 
-  parameter c_CNT_50HZ  = 250;
-  parameter c_CNT_10HZ  = 1250;
-  parameter c_CNT_1HZ   = 12500;
+  parameter c_CNT_100HZ = 60000; 
+  parameter c_CNT_50HZ  = 120000;
+  parameter c_CNT_10HZ  = 2400000;
+  parameter c_CNT_1HZ   = 4800000;
  
   // These signals will be the counters:
   // registers with 4 Bytes/ 32 bits
@@ -49,9 +46,10 @@ begin
   // They all run continuously even if the switches are
   // not selecting their particular output.
  
-  always @ (posedge i_clock)
+  always @ (posedge CLK)
     begin
-      if (r_CNT_100HZ == c_CNT_100HZ-1) // -1, since counter starts at 0
+      if (r_CNT_100HZ == c_CNT_100HZ-1)         // if register 100 Hz is equal to counter 100 Hz, then 
+                                                // don't toggle (?)r_TOGGLE gets !r_TOGGLE. And put 0 into the register
         begin        
           r_TOGGLE_100HZ <= !r_TOGGLE_100HZ;
           r_CNT_100HZ    <= 0;
@@ -61,9 +59,9 @@ begin
     end
  
    
-  always @ (posedge i_clock)
+  always @ (posedge CLK)
     begin
-      if (r_CNT_50HZ == c_CNT_50HZ-1) // -1, since counter starts at 0
+      if (r_CNT_50HZ == c_CNT_50HZ-1)            // -1, since counter starts at 0
         begin        
           r_TOGGLE_50HZ <= !r_TOGGLE_50HZ;
           r_CNT_50HZ    <= 0;
@@ -73,9 +71,9 @@ begin
     end
  
  
-  always @ (posedge i_clock)
+  always @ (posedge CLK)
     begin
-      if (r_CNT_10HZ == c_CNT_10HZ-1) // -1, since counter starts at 0
+      if (r_CNT_10HZ == c_CNT_10HZ-1)             // -1, since counter starts at 0
         begin        
           r_TOGGLE_10HZ <= !r_TOGGLE_10HZ;
           r_CNT_10HZ    <= 0;
@@ -85,9 +83,9 @@ begin
     end
  
    
-  always @ (posedge i_clock)
+  always @ (posedge CLK)
     begin
-      if (r_CNT_1HZ == c_CNT_1HZ-1) // -1, since counter starts at 0
+      if (r_CNT_1HZ == c_CNT_1HZ-1)               // -1, since counter starts at 0
         begin        
           r_TOGGLE_1HZ <= !r_TOGGLE_1HZ;
           r_CNT_1HZ    <= 0;
@@ -99,22 +97,19 @@ begin
   // Create a multiplexer based on switch inputs
   always @ (*)
   begin
-    case ({i_switch_1, i_switch_2}) // Concatenation Operator { }
+    case ({SW1, SW2})                // Concatenation Operator { }
       2'b11 : r_LED_SELECT <= r_TOGGLE_1HZ;
       2'b10 : r_LED_SELECT <= r_TOGGLE_10HZ;
       2'b01 : r_LED_SELECT <= r_TOGGLE_50HZ;
       2'b00 : r_LED_SELECT <= r_TOGGLE_100HZ;
     endcase     
   end
- 
-  assign o_led_drive = r_LED_SELECT & i_enable;
- 
-  // Alternative way to design multiplexer (same as above):
-  // More compact, but harder to read, especially to those new to Verilog
-  // assign w_LED_SELECT = i_switch_1 ? (i_switch_2 ? r_TOGGLE_1HZ : r_TOGGLE_10HZ) : 
-  //                                  (i_switch_2 ? r_TOGGLE_50HZ : r_TOGGLE_100HZ);
-  // assign o_led_drive = w_LED_SELECT & i_enable;
-     
-   
+
+  assign LED0 = 0;
+  assign LED1 = 0;
+  assign LED2 = 0;
+  assign LED3 = 0;
+  assign LED4 = r_LED_SELECT & EN;
+        
 end
 endmodule

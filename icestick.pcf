@@ -1,31 +1,31 @@
 # ##############################################################################
 
 # iCEstick PCF
-
+# Generic iCEstick placement constraints file
 # ##############################################################################
 
-# Since Arachne doesn't seem to like ignoring unused constraints
-# You will have to put ## in front of things you aren't using
-# And then remove ## from anything you are using
-# (## so you don't accidentally remove # comments)
+# Red LEDs
+set_io LED0 99
+set_io LED1 98
+set_io LED2 97
+set_io LED3 96
 
-# Clock
-set_io clk 21   # 12 MHz clock
+# Green LED
+set_io LED4 95
 
-# LEDs
-set_io LED1 99
-set_io LED2 98
-set_io LED3 97
-set_io LED4 96
-set_io LED5 95
-set_io CLK  21
+# 12 MHz clock
+set_io CLK 21
 
 # TEST POINTS
-set_io TSTA 44
-set_io TSTB 45 
+## set_io TSTA 44
+## set_io TSTB 45 
 
 # INPUT SWITCH
-set_io BUTTON 112
+set_io SW1 112
+set_io SW2 113
+
+# ENABLE SWITCH
+set_io EN 114
 
 # IRDA interface
 ##set_io IRRXD 106
@@ -39,8 +39,8 @@ set_io BUTTON 112
 ##set_io SPI_SS 71
 
 # J1
-set_io J1_1  3.3V
-set_io J1_2 GND
+## set_io J1_1  3.3V
+## set_io J1_2 GND
 ##set_io J1_3 112  # PIO0_02 
 ##set_io J1_4 113  # PIO0_03 
 ##set_io J1_5 114  # PIO0_04 
@@ -84,4 +84,4 @@ set_io J1_2 GND
 
 # Config pins
 #set_io CDONE 65
-#set_io CRESET_B 66
+#set_io CRESET_B 66 // configuration reset
